@@ -1,44 +1,97 @@
 # AWS-3-tier-architecture
 Overview
-This repository contains a visual representation of a 3-Tier Architecture on AWS using Draw.io. The architecture follows the standard:
-- Presentation Layer: Handles user requests via Application Load Balancer & EC2 instances.
-- Application Layer: Processes requests using backend servers.
-- Database Layer: Stores application data using Amazon RDS.
+
+This repository contains a visual representation of a 3-Tier Architecture on AWS using Draw.io. The architecture follows the standard three-tier approach:
+
+Presentation Layer: Handles user requests via Application Load Balancer (ALB) & EC2 instances.
+
+Application Layer: Processes requests using backend servers.
+
+Database Layer: Stores application data using Amazon RDS.
 
 
-Components Used
-- Frontend: AWS CloudFront, Application Load Balancer, EC2 Instances, Route53. 
-- Backend: EC2, Auto Scaling Group, IAM Role.
-- Database: Amazon RDS (MySQL).
-- Networking: VPC,Subnets,  Security Groups, Route Tables.
-- Security: Amazon Certificate Manager (ACM), Bastion Host.
-- Monitoring: CloudWatch, CloudWatch Alarm.
+Components Used:
+Frontend: 
+  AWS CloudFront 
+  Application Load Balancer (ALB)
+  EC2 Instances
+  Route 53
 
-Step-by-Step Implementation 
-Setting Up the VPC & Subnets
-I created a VPC to provide an isolated network and enhanced security for my resources.
-For fault tolerance and availability, the VPC was divided into 2 Availability Zones (AZ). Each AZ contained 3 Subnets; 
-1 Public Subnet for  the Presentation tier
-1 Private Subnet for the Application Tier
-1 Private Subnet for the Database Tier
+Backend:
+  EC2 Instances
+  Auto Scaling Group (ASG)
+  IAM Roles
+  
+Database:
+  Amazon RDS (MySQL)
+  Networking
+  Virtual Private Cloud (VPC)
+  Subnets (Public & Private)
+  Security Groups
+  Route Tables
 
-For data durability and resilience, I implemented Multi-AZ Relational Database (RDS) setup, with the primary RDS in the private subnet for the database tier of the 1st AZ, and the standby RDS  in the private subnet for the  database tier of the 2nd AZ. This ensured business continuity in case of failures or disruptions in the primary database.
+Security:
+  Amazon Certificate Manager (ACM)
+  Bastion Host
+  
+Monitoring:
+  Amazon CloudWatch
+  CloudWatch Alarms
 
-An Auto  Scaling Group (ASG) was used to automatically scale the application tier to meet fluctuating demand with the ASG managing EC2 instances across the 2 AZs.
-To manage the presentation tier, I also implemented an ASG to ensure high availability and performance
+Step-by-Step Implementation
 
-A bastion host was deployed to securely access the instances. It served as a control entry point to the private network so that the application tier is not accessed directly.
+1. Setting Up the VPC & Subnets
 
-To efficiently distribute traffic within the application tier, an internal Application Load Balancer (ALB) was implemented. The ALB will direct traffic across the EC2 instances in the private subnet.
+A VPC was created to provide an isolated and secure environment.
 
-To manage external traffic, I deployed an internet facing ALB that distributes traffic across the presentation tier instances. This 2 tier ALB approach enhances scalability and performance.
+The VPC spans two Availability Zones (AZs) for fault tolerance.
 
-To efficiently manage DNS resolution and ensure secure communication, I leverage Amazon Route53. By creating DNS records within Route53, my domain will be mapped to the appropriate resources.
+Each AZ contains three subnets:
 
-For secure HTTPS connections, SSL certificate from AWS Certificate Manager (ACM) was also procured. This certificate was integrated with CloudFront, a content delivery network (CDN) to encrypt data in transit and optimize content delivery to end users. With all these components in place, users can securly access the application via HTTPS.
+Public Subnet (Presentation Tier)
 
-There is synchronous replication of data between the primary database and the standby database for high availability. So in the event of failure, RDS automatically transitions to the standby instance, minimizing downtime and data loss.
+Private Subnet (Application Tier)
 
-To enhance monitoring and optimize resource utilization, I integrated CloudWatch into the architecture. Application logs will be centrally managed within CloudWatch logs providing easy access for troubleshooting and performance analysis.
+Private Subnet (Database Tier)
 
-CloudWatch Alarm was also configured to trigger scaling actions within the ASG ensuring optimal resource allocation based on the demand. By scaling out during peak usage and scaling in during low traffic periods, cost efficiency is manitained while delivering consistent performance.
+2. Database Layer (Amazon RDS)
+
+Multi-AZ RDS setup was implemented for high availability.
+
+The primary RDS instance is in the first AZ, while the standby RDS instance is in the second AZ.
+
+Synchronous replication ensures data durability.
+
+If failure occurs, automatic failover happens to the standby database.
+
+3. Application Layer
+
+Auto Scaling Group (ASG) is used to manage EC2 instances across two AZs.
+
+The ASG scales the application tier based on demand.
+
+An internal Application Load Balancer (ALB) is deployed to distribute traffic to the backend servers.
+
+A bastion host is used to securely access the private instances.
+
+4. Presentation Layer
+
+An Internet-facing ALB manages external traffic.
+
+Route 53 is configured for DNS resolution.
+
+AWS Certificate Manager (ACM) issues an SSL certificate for secure HTTPS access.
+
+Amazon CloudFront is integrated for content delivery optimization.
+
+5. Monitoring & Security
+
+Amazon CloudWatch collects logs and metrics for troubleshooting and performance analysis.
+
+CloudWatch Alarms trigger scaling actions in the ASG.
+
+Security measures include IAM roles, Security Groups, and SSL encryption.
+
+Conclusion
+This 3-Tier AWS Architecture ensures scalability, security, and high availability for applications. By leveraging AWS best practices, the architecture efficiently handles requests, processes data, and stores it securely while minimizing downtime.
+

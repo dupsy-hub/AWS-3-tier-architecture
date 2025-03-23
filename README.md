@@ -92,6 +92,6 @@ CloudWatch Alarms trigger scaling actions in the ASG.
 
 Security measures include IAM roles, Security Groups, and SSL encryption.
 
-Conclusion
+Conclusion:
 This 3-Tier AWS Architecture ensures scalability, security, and high availability for applications. By leveraging AWS best practices, the architecture efficiently handles requests, processes data, and stores it securely while minimizing downtime.
 
